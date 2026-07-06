@@ -1,0 +1,16 @@
+# Virtual environment
+venv/
+Include/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Environment variables
+.env
+
+# IDE settings (optional)
+.vscode/
+
+# Optional Windows file
+Thumbs.db
