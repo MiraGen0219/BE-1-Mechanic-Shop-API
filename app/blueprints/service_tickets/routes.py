@@ -24,11 +24,21 @@ def create_service_ticket():
 
 #GET ALL service tickets:
 @service_ticket_bp.route("/", methods=['GET'])
-def get_service_tickets():
-    query = select(ServiceTicket)
-    service_tickets = db.session.execute(query).scalars().all()
+def get_service_tickets(): 
+    page = request.args.get("page", 1, type=int)
+    per_page = request.args.get("per_page", 10, type=int)
     
-    return jsonify(service_tickets_schema.dump(service_tickets)), 200
+    query = select(ServiceTicket)
+    
+    pagination = db.paginate(query, page=page, per_page=per_page, error_out=False)
+    
+    return jsonify({
+        "service_tickets": service_tickets_schema.dump(pagination.items),
+        "page": pagination.page,
+        "per_page": pagination.per_page,
+        "total": pagination.total,
+        "pages": pagination.pages
+    }), 200
 
 
 #ASSIGN / PUT Mechanic by ID to Service Ticket by ID:
