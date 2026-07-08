@@ -4,7 +4,7 @@ from marshmallow import ValidationError
 from sqlalchemy import select
 from app.models import Customer, db
 from . import customers_bp
-from extensions import limiter, cache
+from app.extensions import limiter, cache
 
 
 @customers_bp.route('/', methods=['POST'])
