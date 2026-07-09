@@ -17,7 +17,9 @@ class Customer(db.Model):
     DOB: Mapped[date]
     password: Mapped[str] = mapped_column(db.String(255), nullable=False)
     
-    loans: Mapped[List['Loan']] = db.relationship(back_populates='customer') #relationship attribute
+    loans: Mapped[List['Loan']] = db.relationship(back_populates='customer') 
+    orders: Mapped[List["Order"]] = db.relationship(back_populates="customer")
+    #relationship attribute
     
 class Loan(db.Model):
     __tablename__ = 'loans'
@@ -88,3 +90,33 @@ class User(db.Model):
     username: Mapped[str] = mapped_column(db.String(80), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(db.String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(db.String(255), nullable=False)
+    
+class Item(db.Model):
+    __tablename__ = "items"
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    item_name: Mapped[str] = mapped_column(db.String(100), nullable=False)
+    price: Mapped[float] = mapped_column(db.Float(), nullable=False)
+    
+    order_items: Mapped[List["OrderItem"]] = db.relationship(back_populates = "item")
+    
+class Order(db.Model):
+    __tablename__ = "orders"
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    order_date: Mapped[date] = mapped_column(nullable=False)
+    customer_id: Mapped[int] = mapped_column(db.ForeignKey("customers.id"), nullable=False)
+    
+    customer: Mapped["Customer"] = db.relationship(back_populates="orders")
+    order_items: Mapped[List["OrderItem"]] = db.relationship(back_populates="order")
+    
+class OrderItem(db.Model):
+    __tablename__ = "order_items"
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    order_id: Mapped[int] = mapped_column(db.ForeignKey("orders.id"), nullable=False)
+    item_id: Mapped[int] = mapped_column(db.ForeignKey("items.id"), nullable=False)
+    quantity: Mapped[int] = mapped_column(nullable=False)
+    
+    order: Mapped["Order"] = db.relationship(back_populates="order_items")
+    item: Mapped["Item"] = db.relationship(back_populates="order_items")
