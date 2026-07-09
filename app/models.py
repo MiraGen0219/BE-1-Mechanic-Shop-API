@@ -67,6 +67,24 @@ class Mechanic(db.Model):
     
     service_tickets: Mapped[List['ServiceTicket']] = relationship(secondary='service_ticket_mechanics', back_populates='mechanics')
     
+service_ticket_inventory = db.Table(
+    "service_ticket_inventory", 
+    db.Column("service_ticket_id", db.ForeignKey("service_tickets.id"), primary_key=True),
+    db.Column("inventory_id", db.ForeignKey("inventory.id"), primary_key=True)
+)    
+
+class Inventory(db.Model):
+    __tablename__ = "inventory"
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(db.String(100), nullable=False)
+    price: Mapped[float] = mapped_column(db.Float, nullable=False)
+    
+    service_tickets: Mapped[list["ServiceTicket"]] = relationship(
+        secondary=service_ticket_inventory,
+        back_populates="parts"
+    )
+    
 class ServiceTicket(db.Model):
     __tablename__ = 'service_tickets'
     
@@ -74,6 +92,11 @@ class ServiceTicket(db.Model):
     service_date: Mapped[date] = mapped_column(db.Date, nullable=False)
     service_desc: Mapped[str] = mapped_column(db.String(500), nullable=False)
     VIN: Mapped[str] = mapped_column(db.String(17), nullable=False)
+    
+    parts: Mapped[list["Inventory"]] = relationship(
+        secondary=service_ticket_inventory,
+        back_populates="service_tickets"
+    )
     
     mechanics: Mapped[List['Mechanic']] = relationship(secondary='service_ticket_mechanics', back_populates='service_tickets')
     

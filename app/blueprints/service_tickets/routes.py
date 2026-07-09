@@ -4,6 +4,7 @@ from marshmallow import ValidationError
 from sqlalchemy import select
 from app.models import db, ServiceTicket, Mechanic
 from . import service_ticket_bp
+from app.models import db, ServiceTicket, Mechanic, Inventory
 
 
 # CREATE service ticket:
@@ -108,3 +109,22 @@ def edit_service_ticket_id(ticket_id):
     db.session.commit()
     
     return jsonify(service_ticket_schema.dump(service_ticket))
+
+#ADD A PART TO A SERVICE TICKET
+@service_ticket_bp.route("/<int:ticket_id>/add-part/<int:inventory_id>", methods=['PUT'])
+def add_part_to_ticket(ticket_id, inventory_id):
+    ticket = db.session.get(ServiceTicket, ticket_id)
+    part = db.session.get(Inventory, inventory_id)
+    
+    if not ticket:
+        return jsonify({"error": "Service ticket not found"}), 404
+    
+    if not part:
+        return jsonify({"error": "Inventory item not found"}), 404
+    
+    if part not in ticket.parts:
+        ticket.parts.append(part)
+        
+    db.session.commit()
+    
+    return service_ticket_schema.jsonify(ticket), 200

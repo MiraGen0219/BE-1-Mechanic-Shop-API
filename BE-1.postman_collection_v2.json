@@ -1,0 +1,759 @@
+{
+  "info": {
+    "_postman_id": "1f67164c-15f3-4ba1-a656-043c564dcc51",
+    "name": "BE-1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "55134210"
+  },
+  "item": [
+    {
+      "name": "BE-1-SQL",
+      "item": [
+        {
+          "name": "Create Customer",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"John Smith\",\r\n    \"email\": \"johnsmith@email.com\",\r\n    \"DOB\": \"1995-08-12\",\r\n    \"password\": \"password123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:5000/customer",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "customer"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve ALL Customers",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve Customer by ID",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Edit Customer by ID",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"DOB\": \"1982-01-14\",\r\n    \"email\": \"asort@email.com\",\r\n    \"id\": 2,\r\n    \"name\": \"Arvin P. Sort\",\r\n    \"password\": \"enigma4\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:5000/customers/2",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "customers",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete a Customer by ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"DOB\": \"1982-01-14\",\r\n    \"email\": \"asort@email.com\",\r\n    \"id\": 2,\r\n    \"name\": \"Arvin P. Sort\",\r\n    \"password\": \"enigma4\"\r\n}\r\n"
+            },
+            "url": {
+              "raw": "http://127.0.0.1:5000/customers/3",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "customers",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Mechanic",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Marvin Blank\",\r\n    \"email\": \"mblank24@email.com\",\r\n    \"phone\": \"912-875-4378\",\r\n    \"salary\": 65000\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:5000/mechanics",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "mechanics"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve ALL Mechanics",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Marvin Blank\",\r\n    \"email\": \"mblank24@email.com\",\r\n    \"phone\": \"912-875-4378\",\r\n    \"salary\": 65000\r\n}"
+            },
+            "url": {
+              "raw": "http://127.0.0.1:5000/mechanics",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "mechanics"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit Mechanic by ID",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Marvin J. Blank\",\r\n    \"email\": \"mblank24@email.com\",\r\n    \"phone\": \"912-875-4378\",\r\n    \"salary\": 69000\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:5000/mechanics/1",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "mechanics",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete a Mechanic by ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Marvin J. Blank\",\r\n    \"email\": \"mblank24@email.com\",\r\n    \"phone\": \"912-875-4378\",\r\n    \"salary\": 69000\r\n}"
+            },
+            "url": {
+              "raw": "http://127.0.0.1:5000/mechanics/3",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "mechanics",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Service Ticket",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"service_date\": \"2026-07-06\",\r\n  \"service_desc\": \"Oil change and tire rotation\",\r\n  \"VIN\": \"1HGCM82633A004352\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:5000/service-tickets/",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "service-tickets",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve ALL Service Tickets",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Assign a Mechanic by ID to a Service Ticket by ID",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"service_date\": \"2026-07-06\",\r\n  \"service_desc\": \"Oil change and tire rotation\",\r\n  \"VIN\": \"1HGCM82633A004352\"\r\n}"
+            },
+            "url": {
+              "raw": "http://127.0.0.1:5000/service-tickets/1/assign-mechanic/1",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "service-tickets",
+                "1",
+                "assign-mechanic",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove assigned Mechanic by ID from Service Ticket by ID",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"service_date\": \"2026-07-06\",\r\n  \"service_desc\": \"Oil change and tire rotation\",\r\n  \"VIN\": \"1HGCM82633A004352\"\r\n}"
+            },
+            "url": {
+              "raw": "http://127.0.0.1:5000/service-tickets/1/remove-mechanic/1",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "service-tickets",
+                "1",
+                "remove-mechanic",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Adv. Requests",
+      "item": [
+        {
+          "name": "Edit Service Ticket by ID and Mechanic ID",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"add_mechanic_ids\": [1, 2],\r\n    \"remove_mechanic_ids\": [3]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:5000/service-tickets/1",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "service-tickets",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve frequently assigned Mechanics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://127.0.0.1:5000/mechanics/frequent",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "mechanics",
+                "frequent"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search a Mechanic by name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://127.0.0.1:5000/mechanics/search?name=joe",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "mechanics",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "joe"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Service Tickets paginated",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://127.0.0.1:5000/service-tickets/?page=1&per_page=3",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "service-tickets",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "New Folder",
+      "item": [
+        {
+          "name": "Create Item",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"item_name\": \"Wrench\",\r\n    \"price\": 24.99\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:5000/items",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "items"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve ALL Items",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Get Item by ID",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"item_name\": \"Wrench\",\r\n    \"price\": 24.99\r\n}"
+            },
+            "url": {
+              "raw": "http://127.0.0.1:5000/items/5",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "items",
+                "5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit an Item by ID",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"item_name\": \"Wrench\",\r\n    \"price\": 22.34\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:5000/items/1",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "items",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Item by ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"item_name\": \"Wrench\",\r\n    \"price\": 24.99\r\n}"
+            },
+            "url": {
+              "raw": "http://127.0.0.1:5000/items/22",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "items",
+                "22"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Order by Customer ID, Item ID, Quant.",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"customer_id\": 2,\r\n  \"item_quantity\": [\r\n    {\r\n      \"item_id\": 1,\r\n      \"item_quantity\": 1\r\n    },\r\n    {\r\n      \"item_id\": 2,\r\n      \"item_quantity\": 1\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:5000/orders",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Attach a Part to a Service Ticket",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://127.0.0.1:5000/service-tickets/1/add-part/3",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "service-tickets",
+                "1",
+                "add-part",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Inventory Item",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Callipers\",\r\n  \"price\": 120.99\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:5000/inventory/",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "inventory",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve ALL Inventory",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve Inventory by ID",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Edit an Inventory by ID",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{   \"id\": 2,\r\n    \"name\": \"Shop Towels\",\r\n    \"price\": 21.99\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:5000/inventory/2",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "inventory",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete an Inventory by ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{   \"id\": 2,\r\n    \"name\": \"Shop Towels\",\r\n    \"price\": 21.99\r\n}"
+            },
+            "url": {
+              "raw": "http://127.0.0.1:5000/inventory/6",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "5000",
+              "path": [
+                "inventory",
+                "6"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

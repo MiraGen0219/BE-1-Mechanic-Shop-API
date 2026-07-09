@@ -7,6 +7,7 @@ from .blueprints.service_tickets import service_ticket_bp
 from .blueprints.user import user_bp
 from app.blueprints.items import items_bp
 from app.blueprints.orders import orders_bp
+from app.blueprints.inventory import inventory_bp
 
 def create_app(config_name):
     app = Flask(__name__)
@@ -27,6 +28,7 @@ def create_app(config_name):
     app.register_blueprint(user_bp, url_prefix="/users")
     app.register_blueprint(items_bp, url_prefix="/items")
     app.register_blueprint(orders_bp, url_prefix="/orders")
+    app.register_blueprint(inventory_bp, url_prefix="/inventory")
     
     with app.app_context():
         db.create_all()
