@@ -1,60 +1,81 @@
 # 🔧 Mechanic Shop API
 
-A RESTful backend API for managing customers, mechanics, and automotive service tickets. This project demonstrates modern Flask application architecture using the **Application Factory Pattern**, **Blueprints**, **SQLAlchemy ORM**, and **Marshmallow** for serialization and validation.
+A modular RESTful backend API for managing customers, mechanics, automotive service tickets, inventory, customer orders, and authentication. This project demonstrates modern Flask architecture using the **Application Factory Pattern**, **Blueprints**, **SQLAlchemy ORM**, **Marshmallow**, **JWT Authentication**, **Rate Limiting**, and **Caching**.
 
 ---
 
-## 📌 Project Overview
+# 📌 Project Overview
 
-The Mechanic Shop API allows users to:
-
-- Manage customer records
-- Manage mechanic records
-- Create and retrieve service tickets
-- Assign mechanics to service tickets
-- Remove mechanics from service tickets
-
-This project was built to practice scalable Flask architecture, relational database design, and RESTful API development.
-
----
-
-## 🛠️ Technologies Used
-
-- Python 3.14
-- Flask
-- SQLAlchemy
-- Marshmallow
-- MySQL
-- Postman
-- Git & GitHub
-
----
-
-## 🏗️ Architecture
-
-This project utilizes the **Flask Application Factory Pattern** to create a modular and scalable application.
+The Mechanic Shop API provides a complete backend for a fictional automotive repair business.
 
 Features include:
 
-- Application Factory Pattern
-- Blueprint architecture
-- Modular route organization
-- SQLAlchemy ORM
-- Marshmallow schemas
-- RESTful API design
+* Customer management
+* Mechanic management
+* Service ticket management
+* Inventory management
+* Customer orders
+* Item catalog
+* Authentication using JWT
+* Protected routes
+* Pagination
+* Search functionality
+* Rate limiting
+* Response caching
+
+This project was developed to practice scalable Flask application architecture, relational database design, authentication, and RESTful API development.
 
 ---
 
-## 📂 Project Structure
+# 🛠️ Technologies Used
 
-```
+* Python 3.14
+* Flask
+* SQLAlchemy
+* Marshmallow
+* Flask-Limiter
+* Flask-Caching
+* python-jose (JWT)
+* MySQL
+* Postman
+* Git
+* GitHub
+
+---
+
+# 🏗️ Architecture
+
+This project follows the **Flask Application Factory Pattern** for modular application design.
+
+Features include:
+
+* Application Factory Pattern
+* Blueprint Architecture
+* SQLAlchemy ORM
+* Marshmallow Schemas
+* JWT Authentication
+* Route Protection
+* Rate Limiting
+* Response Caching
+* RESTful API Design
+* Modular Project Structure
+
+---
+
+# 📂 Project Structure
+
+```text
 BE-1-SQL/
 │
 ├── app/
 │   ├── blueprints/
 │   │   ├── customers/
 │   │   ├── mechanics/
-│   │   └── service_tickets/
+│   │   ├── service_tickets/
+│   │   ├── inventory/
+│   │   ├── items/
+│   │   ├── orders/
+│   │   └── users/
 │   │
 │   ├── __init__.py
 │   ├── extensions.py
@@ -63,170 +84,241 @@ BE-1-SQL/
 ├── app.py
 ├── config.py
 ├── requirements.txt
-├── BE-1.postman_collection.json
+├── BE-1.postman_collection_v2.json
 └── README.md
 ```
 
 ---
 
-## 📦 Models
+# 📦 Database Models
 
 ### Customer
 
-- id
-- name
-- email
-- date of birth
-- password
+* ID
+* Name
+* Email
+* Date of Birth
+* Password
 
 ### Mechanic
 
-- id
-- name
-- email
-- phone
-- salary
+* ID
+* Name
+* Email
+* Phone
+* Salary
 
 ### Service Ticket
 
-- id
-- service date
-- service description
-- vehicle VIN
+* ID
+* Service Date
+* Service Description
+* Vehicle VIN
+
+### Inventory
+
+* ID
+* Name
+* Price
+
+### Item
+
+* ID
+* Item Name
+* Price
+
+### Order
+
+* ID
+* Order Date
+* Customer
+
+### Order Item
+
+* Order
+* Item
+* Quantity
+
+### User
+
+* Username
+* Email
+* Password
 
 ---
 
-## 🔗 Database Relationships
+# 🔗 Database Relationships
 
 ### One-to-Many
 
-- Customer → Loans
+* Customer → Loans
+* Customer → Orders
+* Order → Order Items
+* Item → Order Items
 
 ### Many-to-Many
 
-- Service Tickets ↔ Mechanics
+* Service Tickets ↔ Mechanics
+* Service Tickets ↔ Inventory
 
-A mechanic may work on multiple service tickets.
-
-A service ticket may have multiple mechanics assigned.
-
----
-
-## 🚀 API Endpoints
-
-### Customers
-
-| Method | Endpoint | Description |
-|---------|----------|-------------|
-| POST | `/customers/` | Create customer |
-| GET | `/customers/` | Retrieve all customers |
-| GET | `/customers/<id>` | Retrieve customer by ID |
-| PUT | `/customers/<id>` | Update customer |
-| DELETE | `/customers/<id>` | Delete customer |
+This allows multiple mechanics to work on the same repair while multiple inventory items can be associated with each service ticket.
 
 ---
 
-### Mechanics
+# 🚀 API Features
 
-| Method | Endpoint | Description |
-|---------|----------|-------------|
-| POST | `/mechanics/` | Create mechanic |
-| GET | `/mechanics/` | Retrieve all mechanics |
-| PUT | `/mechanics/<id>` | Update mechanic |
-| DELETE | `/mechanics/<id>` | Delete mechanic |
+## Customers
 
----
-
-### Service Tickets
-
-| Method | Endpoint | Description |
-|---------|----------|-------------|
-| POST | `/service-tickets/` | Create service ticket |
-| GET | `/service-tickets/` | Retrieve all service tickets |
-| PUT | `/service-tickets/<ticket_id>/assign-mechanic/<mechanic_id>` | Assign mechanic |
-| PUT | `/service-tickets/<ticket_id>/remove-mechanic/<mechanic_id>` | Remove mechanic |
+* Create customer
+* Retrieve customers
+* Update customer
+* Delete customer
+* Customer Login
+* Customer Authentication
+* Customer Pagination
 
 ---
 
-## 🧪 API Testing
+## Mechanics
 
-All endpoints were tested using **Postman**.
+* CRUD Operations
+* Search mechanics by name
+* Frequently assigned mechanics
+* Ticket assignment
 
-A complete Postman collection is included with the repository:
+---
 
+## Service Tickets
+
+* CRUD Operations
+* Assign mechanics
+* Remove mechanics
+* Add inventory to tickets
+* Customer-specific ticket lookup
+* Pagination
+
+---
+
+## Inventory
+
+* Create inventory item
+* Retrieve inventory
+* Update inventory
+* Delete inventory
+* Associate inventory with service tickets
+
+---
+
+## Orders
+
+* Create customer orders
+* View customer orders
+* Order item relationships
+
+---
+
+## Items
+
+* CRUD Operations
+* Order integration
+
+---
+
+## Authentication
+
+* JWT Token Generation
+* Protected Routes
+* Token Validation
+* Bearer Token Authorization
+
+---
+
+## Performance
+
+* Flask-Limiter Rate Limiting
+* Flask-Caching
+* Paginated API Responses
+
+---
+
+# 🧪 API Testing
+
+Every endpoint was tested using **Postman**.
+
+A complete Postman collection is included:
+
+```text
+BE-1.postman_collection_v2.json
 ```
-BE-1.postman_collection.json
-```
 
 ---
 
-## 💡 Concepts Practiced
+# 💡 Concepts Practiced
 
-- Flask Application Factory Pattern
-- Blueprints
-- REST API Design
-- SQLAlchemy ORM
-- Marshmallow Validation
-- Serialization / Deserialization
-- One-to-Many Relationships
-- Many-to-Many Relationships
-- Relationship Tables
-- CRUD Operations
-- Postman API Testing
-- Git Version Control
-- GitHub Repository Management
-
----
-
-## 📚 Lessons Learned
-
-This project provided valuable experience building a modular Flask backend application.
-
-Some of the key lessons included:
-
-- Organizing larger Flask projects using the Application Factory Pattern
-- Registering and managing multiple Blueprints
-- Designing one-to-many and many-to-many database relationships
-- Using SQLAlchemy relationship methods such as `append()` and `remove()`
-- Serializing SQLAlchemy models with Marshmallow
-- Debugging import paths, blueprint registration, and relationship configuration
-- Testing and validating REST endpoints using Postman
-- Managing source control with Git and GitHub
-
-Working through debugging and resolving runtime errors significantly strengthened my understanding of Flask application structure and backend development workflows.
+* Flask Application Factory Pattern
+* Blueprints
+* SQLAlchemy ORM
+* Marshmallow Serialization
+* Marshmallow Validation
+* JWT Authentication
+* Protected Routes
+* Rate Limiting
+* Response Caching
+* Pagination
+* Search Endpoints
+* CRUD Operations
+* One-to-Many Relationships
+* Many-to-Many Relationships
+* Junction Tables
+* REST API Design
+* MySQL Database Design
+* Postman API Testing
+* Git
+* GitHub
 
 ---
 
-## 🔮 Future Improvements
+# 📚 Lessons Learned
+
+This project significantly expanded my backend development experience.
+
+Key concepts reinforced included:
+
+* Designing modular Flask applications using the Application Factory Pattern
+* Building scalable APIs using Blueprints
+* Creating secure authentication with JWT tokens
+* Protecting endpoints using decorators
+* Implementing rate limiting and response caching
+* Designing one-to-many and many-to-many database relationships
+* Managing SQLAlchemy relationships using append() and remove()
+* Building advanced queries with SQLAlchemy
+* Creating reusable Marshmallow schemas
+* Debugging Flask routing, imports, authentication, and ORM relationships
+* Testing complete REST APIs using Postman
+* Managing version control using Git and GitHub
+
+---
+
+# 🔮 Future Improvements
 
 Potential future enhancements include:
 
-- Authentication and authorization
-- JWT-based login
-- Mechanic scheduling
-- Customer vehicle records
-- Repair history tracking
-- Service status updates
-- Search and filtering endpoints
-- Pagination
-- Docker deployment
-- Automated unit and integration testing
+* Role-based authorization (Admin / Mechanic / Customer)
+* Inventory quantity tracking
+* Service status workflow
+* Customer vehicle management
+* Repair history
+* Mechanic scheduling
+* Email notifications
+* Automated unit testing
+* Integration testing
+* Docker deployment
+* CI/CD Pipeline
 
 ---
 
-## 👨‍💻 Author
+# 👨‍💻 Author
 
 **Erin**
 
 Animal Science Graduate | Full-Stack Software Engineering Student
-
-Interested in:
-
-- Python Development
-- SQL Databases
-- REST APIs
-- React
-- Wildlife Conservation Data Systems
-- Population Management Software
-
----
