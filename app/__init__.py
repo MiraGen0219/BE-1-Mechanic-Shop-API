@@ -8,6 +8,19 @@ from .blueprints.user import user_bp
 from app.blueprints.items import items_bp
 from app.blueprints.orders import orders_bp
 from app.blueprints.inventory import inventory_bp
+from flask_swagger_ui import get_swaggerui_blueprint
+
+SWAGGER_URL = '/api/docs' 
+API_URL = '/static/swagger.yaml'
+
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL, 
+    API_URL,
+    config={
+        'app_name': "API name"
+    }
+)
+
 
 def create_app(config_name):
     app = Flask(__name__)
@@ -29,6 +42,7 @@ def create_app(config_name):
     app.register_blueprint(items_bp, url_prefix="/items")
     app.register_blueprint(orders_bp, url_prefix="/orders")
     app.register_blueprint(inventory_bp, url_prefix="/inventory")
+    app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
     
     with app.app_context():
         db.create_all()
