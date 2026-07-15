@@ -38,7 +38,7 @@ def get_mechanics():
     return jsonify(mechanics_schema.dump(mechanics)), 200
 
 @mechanics_bp.route("/search", methods=['GET'])
-def search_book():
+def search_mechanic():
     name = request.args.get("name")
     
     query = select(Mechanic).where(Mechanic.name.like(f"%{name}%"))

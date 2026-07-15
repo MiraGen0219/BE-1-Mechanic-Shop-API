@@ -20,17 +20,19 @@ securityDefinitions:
     in: header
 
 # ENDPOINTS
+
+#CUSTOMERS
 paths:
   /customers/login:
     post:
       tags:
-        - customers
-      summary: "Login endpoint, (generates token)"
-      description: "Validates customer credentials, generates and returns a customer specific token."
+        - Customers
+      summary: "Log in a customer"
+      description: "Validates customer credentials, generates and returns a customer-specific authentication token."
       parameters:
         - in: "body"
           name: "body"
-          description: "Login Credentials"
+          description: "Customer login Credentials"
           required: true
           schema: 
             $ref: "#/definitions/LoginCredentials"
@@ -44,57 +46,98 @@ paths:
               token: "kjsbvpiuahsenASDKLJASDKBASKDHI..."
               message: "Successfully logged in."
               status: "success"
+        400:
+          description: "Invalid login credentials."
+          examples:
+            application/json:
+              message: "Invalid email or password!"
 
-  /customers: #endpoint
+  /customers/: #endpoint
     post: 
       tags:
         - Customers
-      summary: "Endpoint to create/register a new user."
-      description: "Endpoint to create a new customer in our Mechanic Shop system, emails must be unique."
+      summary: "Create a new customer"
+      description: "Creates a new customer in our Mechanic Shop system, emails must be unique."
       parameters:
         - in: "body"
           name: "body"
-          description: "Information required to create a new Customer."
+          description: "Information required to create a new customer."
           required: true
           schema:
             $ref: "#/definitions/CreateCustomerPayload" 
       responses:
         201:
-          descriptions: "Successful Customer Creation"
+          description: "Successful Customer Creation"
           schema:
-            $ref: "#/definitions/CreateCustomerResponse"
+            $ref: "#/definitions/CustomerResponse"
           examples:
             application/json:
               id: 1
               name: John Doe
               DOB: "1990-01-01"
               email: john@email.com
-              password: password123      
+              password: password123     
+        400:
+          description: "Invalid customer information."
+          examples: 
+            application/json:
+              email: 
+                - "Missing data for required field." 
 
     get:
       tags:
         - Customers
       summary: "Returns all Customers"
-      description: "Endpoint to retrieve a list of all customers."
+      description: "Returns a list of all customers."
       responses:
         200:
           description: "Retrieved Customers Successfully"
           schema: 
-            $ref: "#/definitions/AllCustomers" 
+            type: array
+            items: 
+              $ref: "#/definitions/CustomerResponse" 
+          examples: 
+            application/json:
+              - id: 1
+                name: "test_user"
+                email: "test@email.com"
+                DOB: "1990-01-01"
+
+  /customers/{customer_id}:
+    parameters:
+      - in: path
+        name: customer_id
+        required: true
+        type: integer
+        description: "The ID of the customer"
+
+    get:
+      tags:
+        - Customers
+      summary: "Get a customer by ID"
+      description: "Returns a single customer using the supplied customer ID."
+      responses:
+        200:
+          description: "Customer retrieved successfully."
+          schema:
+            $ref: "#/definitions/CustomerResponse"
+        404:
+          description: "Customer not found."
+          examples: 
+            application/json:
+              error: "Customer not found."
 
     put: 
       tags:
         - Customers
-      summary: "Endpoint to update a user."
-      description: "Endpoint to update a customer, this is a token authenticated route, and hte user must be logged in to update their account."
-      security: 
-        - bearerAuth: []
+      summary: "Update a customer"
+      description: "Updates one or more fields belonging to an existing customer."
       parameters:
-        - in: "body"
-          name: "body"
-          description: "Information required to update a Customer."
+        - in: body
+          name: body
+          description: "Customer fields to update."
           required: true
-          schema: 
+          schema:
             $ref: "#/definitions/UpdateCustomerPayload"
       responses:
         200:
@@ -107,15 +150,24 @@ paths:
               name: Joe Smith
               DOB: "1990-01-01"
               email: jsmith@email.com
-              password: password123     
+              password: password123   
+        400:
+          description: "Invalid update information."
+          examples:
+            application/json:
+              DOB: 
+                - "Not a valid date."
+        404:
+          description: "Customer not found."
+          examples:
+            application/json:
+              error: "Customer not found."  
 
     delete:
       tags:
         - Customers
-      summary: "Endpoint to delete a customer."
-      description: "Endpoint to delete a customer. Requires token authentication, customer must be logged in to delete their account."
-      security:
-        - bearerAuth: []
+      summary: "Delete a customer."
+      description: "Deletes the customer associated with the supplied customer ID."
       responses:
         200:
           description: "Successfully Deleted Customer."
@@ -123,118 +175,331 @@ paths:
             $ref: "#/definitions/DeleteCustomerResponse"
           examples:
             application/json:
-              message: "Successfully deleted user <customer_id>."
+              message: "Customer deleted successfully."
+        404:
+          description: "Customer not found."
+          examples:
+            application/json:
+              error: "Customer not found."
+
+  # MECHANIC ENDPOINTS
+
+  /mechanics/:
+    post:
+      tags:
+        - Mechanics
+      summary: "Create a new mechanic"
+      description: "Creates a new mechanic. Mechanic email addresses must be unique."
+      parameters:
+        - in: body
+          name: body
+          description: "Information required to create a mechanic."
+          required: true
+          schema:
+            $ref: "#/definitions/CreateMechanicPayload"
+      responses:
+        201:
+          description: "Mechanic created successfully."
+          schema:
+            $ref: "#/definitions/MechanicResponse"
+          examples:
+            application/json:
+              id: 1
+              name: "Jane Smith"
+              email: "jane@email.com"
+        400:
+          description: "Invalid mechanic information or duplicate email."
+          examples:
+            application/json:
+              error: "Email already associated with a mechanic."
+
+    get:
+      tags:
+        - Mechanics
+      summary: "Get all mechanics"
+      description: "Returns a list of all mechanics."
+      responses:
+        200:
+          description: "Mechanics retrieved successfully."
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/MechanicResponse"
+          examples:
+            application/json:
+              - id: 1
+                name: "Joe Bosh"
+                email: "joe@email.com"
+              - id: 2
+                name: "Jane Smith"
+                email: "jane@email.com"
+
+  /mechanics/frequent:
+    get:
+      tags:
+        - Mechanics
+      summary: "Get mechanics by service ticket count"
+      description: "Returns all mechanics sorted by the number of service tickets assigned to each mechanic."
+      responses:
+        200:
+          description: "Mechanics retrieved successfully."
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/FrequentMechanicResponse"
+          examples:
+            application/json:
+              - id: 1
+                name: "Joe Bosh"
+                email: "joe@email.com"
+                ticket_count: 5
+              - id: 2
+                name: "Jane Smith"
+                email: "jane@email.com"
+                ticket_count: 2
+
+  /mechanics/search:
+    get:
+      tags:
+        - Mechanics
+      summary: "Search mechanics by name"
+      description: "Returns mechanics whose names contain the supplied search string."
+      parameters:
+        - in: query
+          name: name
+          required: true
+          type: string
+          description: "Name or partial name of the mechanic."
+      responses:
+        200:
+          description: "Search completed successfully."
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/MechanicResponse"
+          examples:
+            application/json:
+              - id: 1
+                name: "Joe Bosh"
+                email: "joe@email.com"
+
+  /mechanics/{mechanic_id}:
+    parameters:
+      - in: path
+        name: mechanic_id
+        required: true
+        type: integer
+        description: "The ID of the mechanic."
+
+    put:
+      tags:
+        - Mechanics
+      summary: "Update a mechanic"
+      description: "Updates one or more fields belonging to an existing mechanic."
+      parameters:
+        - in: body
+          name: body
+          description: "Mechanic fields to update."
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateMechanicPayload"
+      responses:
+        200:
+          description: "Mechanic updated successfully."
+          schema:
+            $ref: "#/definitions/MechanicResponse"
+          examples:
+            application/json:
+              id: 1
+              name: "Joe Bosh"
+              email: "jbosh@email.com"
+        400:
+          description: "Invalid mechanic information."
+        404:
+          description: "Mechanic not found."
+          examples:
+            application/json:
+              error: "Mechanic not found"
+
+    delete:
+      tags:
+        - Mechanics
+      summary: "Delete a mechanic"
+      description: "Deletes the mechanic associated with the supplied mechanic ID."
+      responses:
+        200:
+          description: "Mechanic deleted successfully."
+          schema:
+            $ref: "#/definitions/DeleteMechanicResponse"
+          examples:
+            application/json:
+              message: "Mechanic deleted successfully"
+        404:
+          description: "Mechanic not found."
+          examples:
+            application/json:
+              error: "Mechanic not found"
+
 
 
 #EXAMPLES for Responses and Requests
+#CUSTOMER Definitions:
 definitions: 
 
   LoginCredentials:
     type: "object"
-    properties:
-      email:
-        type: "string"
-      password:
-        type: "string"
-      
     required:
       - email
       - password
+    properties:
+      email:
+        type: string
+        format: email
+        example: "test@email.com"
+      password: 
+        type: string
+        example: "test"
 
   CreateCustomerPayload:
     type: "object"
-    properties:
-      name: 
-        type: "string"
-      email:
-        type: "string"
-      DOB: 
-        type: "string"
-        format: date
-      password:
-        type: "string"
-
     required: 
       - name
       - email
       - DOB
       - password
-
-  CreateCustomerResponse:
-    type: "object"
-    properties: 
-      id: 
-        type: "int"
-      name: 
-        type: "string"
-      email:
-        type: "string"
-      DOB:
-        type: "string"
+    properties:
+      name:
+        type: string
+        example: "John Doe"
+      email: 
+        type: string
+        format: email
+        example: "john@email.com"
+      DOB: 
+        type: string
+        format: date
+        example: "1990-01-01"
       password:
-        type: "string"
+        type: string
+        example: "password123"
     
   LoginResponse:
     type: "object"
     properties:
       token:
         type: "string"
+        example: "eyJ0eXAiOiJKV1QiLCJhbGciOi..."
       message:
         type: "string"
+        example: "successfully logged in."
       status:
         type: "string"
-
-  AllCustomers:
-    tyep: "array"
-    items:
-      type: "object"
-      properties:
-        id:
-          type: "integer"
-        name:
-          type: "string"
-        email: 
-          type: "string"
-        DOB: 
-          type: "string"
-        password:
-          type: "string"
+        example: "success"
   
   UpdateCustomerPayload:
     type: "object"
     properties:
       name:
         type: "string"
+        example: "Peter"
       email: 
         type: "string"
+        format: email
+        example: "peter@gmail.com"
       DOB: 
         type: "string"
         format: "date"
+        example: "1992-04-15"
       password:
         type: "string"
+        example: "new-password"
 
-    required:
-      - name
-      - email
-      - DOB
-      - password
-
-  UpdateCustomerResponse:
-    type: "object"
-    properties: 
-      id: 
-        type: "integer"
+  CustomerResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 1
       name: 
-        type: "string"
+        type: string
+        example: "John Doe"
       email: 
-        type: "string"
-      DOB: 
-        type: "string"
-      password: 
-        type: "string"
+        type: string
+        format: email
+        example: "john@email.com"
+      DOB:
+        type: string
+        format: date
+        example: "1990-01-01"
 
   DeleteCustomerResponse:
     type: "object"
     properties: 
       message:
         type: "string"
+        example: "Customer deleted successfully."
+
+
+#MECHANIC Definitions:
+  CreateMechanicPayload:
+    type: object
+    required: 
+      - name
+      - email
+    properties:
+      name:
+        type: string
+        example: "Jane Smith"
+      email:
+        type: string
+        format: email
+        example: "jane@email.com"
+
+  UpdateMechanicPayload:
+    type: object
+    properties:
+      name:
+        type: string
+        example: "Joseph Bosh"
+      email:
+        type: string
+        format: email
+        example: "jbosh@email.com"
+
+  MechanicResponse:
+    type: object
+    properties:
+      id: 
+        type: integer
+        example: 1
+      name: 
+        type: string
+        example: "Joe Bosh"
+      email:
+        type: string
+        format: email
+        example: "joe@email.com"
+
+  DeleteMechanicResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "Mechanic deleted successfully."
+
+  FrequentMechanicResponse:
+    type: object
+    properties:
+      id: 
+        type: integer
+        example: 1
+      name: 
+        type: string
+        example: "Joe Bosh"
+      email: 
+        type: string
+        format: email
+        example: "joe@email.com"
+      ticket_count: 
+        type: integer
+        example: 4
