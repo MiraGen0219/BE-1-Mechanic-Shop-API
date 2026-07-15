@@ -4,7 +4,7 @@ from .models import db
 from .blueprints.customers import customers_bp
 from .blueprints.mechanics import mechanics_bp
 from .blueprints.service_tickets import service_ticket_bp
-from .blueprints.user import user_bp
+from .blueprints.users import user_bp
 from app.blueprints.items import items_bp
 from app.blueprints.orders import orders_bp
 from app.blueprints.inventory import inventory_bp

@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from marshmallow import ValidationError
-from app.blueprints.user import user_bp
+from app.blueprints.users import user_bp
 from app.models import User, db
 from sqlalchemy import select
 from app.extensions import limiter, cache

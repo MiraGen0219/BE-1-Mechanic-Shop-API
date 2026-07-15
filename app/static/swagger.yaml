@@ -340,6 +340,140 @@ paths:
             application/json:
               error: "Mechanic not found"
 
+#ITEMS
+  /items/:
+    post: 
+      tags:
+        - Items
+      summary: "Create a new item"
+      description: "Creates a new item in the mechanic shop inventory."
+      parameters:
+        - in: body
+          name: body
+          description: "Information required to create an item."
+          required: true
+          schema:
+            $ref: "#/definitions/CreateItemPayload"
+      responses:
+        201:
+          description: "Item created successfully."
+          schema: 
+            $ref: "#/definitions/ItemResponse"
+          examples:
+            application/json:
+              id: 1
+              item_name: "Oil Filter"
+              price: 12.99
+        400:
+          description: "Invalid item information."
+          examples:
+            application/json:
+              price: 
+                - "Missing data for required field."
+
+    get: 
+      tags:
+        - Items
+      summary: "Get all items"
+      description: "Returns a list of all items."
+      responses: 
+        200:
+          description: "Items retrieved successfully."
+          schema:
+            type: array
+            items:  
+              $ref: "#/definitions/ItemResponse"
+          examples:
+            application/json:
+              - id: 1
+                item_name: "Brake Pads"
+                price: 49.99
+              - id: 2
+                item_name: "Oil Filter"
+                price: 12.99
+
+  /items/{item_id}:
+    parameters:
+      - in: path
+        name: item_id
+        required: true
+        type: integer
+        description: "The ID of the item."
+
+    get: 
+      tags:
+        - Items
+      summary: "Get an item by ID"
+      description: "Returns one item using the supplied item ID."
+      responses:
+        200:
+          description: "Item retrieved successfully."
+          schema:
+            $ref: "#/definitions/ItemResponse"
+          examples: 
+            application/json:
+              id: 1
+              item_name: "Brake Pads"
+              price: 49.99
+        404:
+          description: "Item not found."
+          examples:
+            application/json:
+              error: "Item not found."
+
+    put:
+      tags: 
+        - Items
+      summary: "Update an item"
+      description: "Updates one or more fields belonging to an existing item."
+      parameters:
+        - in: body
+          name: body
+          description: "Item fields to update."
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateItemPayload"
+      responses:
+        200:
+          description: "Item updated successfully."
+          schema:
+            $ref: "#/definitions/ItemResponse"
+          examples: 
+            application/json:
+              id: 1
+              item_name: "Brake Pads"
+              price: 59.99
+        400:
+          description: "Invalid item information."
+          examples:
+            application/json:
+              unknown_field:
+                - "Unknown field."
+        404:
+          description: "Item not found."
+          examples:
+            application/json:
+              error: "Item not found."
+
+    delete:
+      tags:
+        - Items
+      summary: "Delete an item"
+      description: "Deletes the item associated with the supplied item ID."
+      responses:
+        200:
+          description: "Item deleted successfully."
+          schema:
+            $ref: "#/definitions/DeleteItemResponse"
+          examples: 
+            application/json:
+              message: "Item 1 deleted successfully."
+        404: 
+          description: "Item not found."
+          examples:
+            application/json:
+              error: "Item not found."
+
 
 
 #EXAMPLES for Responses and Requests
@@ -503,3 +637,51 @@ definitions:
       ticket_count: 
         type: integer
         example: 4
+
+
+#ITEMS Definitions:
+  CreateItemPayload:
+    type: object
+    required:
+      - item_name:
+      - price
+    properties:
+      item_name:
+        type: string
+        example: "Oil Filter"
+      price:
+        type: number
+        format: float
+        example: 12.99
+
+  UpdateItemPayload:
+    type: object
+    properties:
+      item_name:
+        type: string
+        example: "Premium Brake Pads"
+      price: 
+        type: number
+        format: float
+        example: 59.99
+
+  ItemResponse: 
+    type: object
+    properties: 
+      id: 
+        type: integer
+        example: 1
+      item_name:
+        type: string
+        example: "Brake Pads"
+      price:
+        type: number
+        format: float
+        example: 49.99
+
+  DeleteItemResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "Item 1 deleted successfully."
