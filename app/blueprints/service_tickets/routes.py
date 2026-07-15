@@ -2,7 +2,6 @@ from .schemas import service_ticket_schema, service_tickets_schema, edit_service
 from flask import request, jsonify
 from marshmallow import ValidationError
 from sqlalchemy import select
-from app.models import db, ServiceTicket, Mechanic
 from . import service_ticket_bp
 from app.models import db, ServiceTicket, Mechanic, Inventory
 
@@ -40,7 +39,16 @@ def get_service_tickets():
         "total": pagination.total,
         "pages": pagination.pages
     }), 200
-
+    
+#GET Service Ticket by ID:
+@service_ticket_bp.route("/<int:ticket_id>", methods=['GET'])
+def get_service_ticket(ticket_id):
+    service_ticket = db.session.get(ServiceTicket, ticket_id)
+    
+    if not service_ticket:
+        return jsonify({"error": "Service ticket not found."}), 404
+    
+    return service_ticket_schema.jsonify(service_ticket), 200
 
 #ASSIGN / PUT Mechanic by ID to Service Ticket by ID:
 @service_ticket_bp.route("/<int:ticket_id>/assign-mechanic/<int:mechanic_id>", methods=['PUT'])
@@ -92,7 +100,7 @@ def edit_service_ticket_id(ticket_id):
     service_ticket = db.session.get(ServiceTicket, ticket_id)
     
     if not service_ticket:
-        return jsonify({"error": "Service ticket not found."}), 400
+        return jsonify({"error": "Service ticket not found."}), 404
     
     for mechanic_id in service_ticket_edits.get('add_mechanic_ids', []):
         mechanic = db.session.get(Mechanic, mechanic_id)
@@ -128,3 +136,16 @@ def add_part_to_ticket(ticket_id, inventory_id):
     db.session.commit()
     
     return service_ticket_schema.jsonify(ticket), 200
+
+#DELETE a Service Ticket:
+@service_ticket_bp.route("/<int:ticket_id>", methods=['DELETE'])
+def delete_service_ticket(ticket_id):
+    service_ticket = db.session.get(ServiceTicket, ticket_id)
+    
+    if not service_ticket:
+        return jsonify({"error": "Service ticket not found."}), 404
+    
+    db.session.delete(service_ticket)
+    db.session.commit()
+    
+    return jsonify({"message": f"Service ticket {ticket_id} successfully deleted."}), 200

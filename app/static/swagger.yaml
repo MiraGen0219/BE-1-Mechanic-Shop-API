@@ -717,6 +717,208 @@ paths:
             $ref: "#/definitions/MessageResponse"
 
 
+#SERVICE TICKETS:
+  /service-tickets/:
+    post:
+      tags:
+        - Service Tickets
+      summary: "Create a service ticket"
+      description: "Creates a new service ticket."
+      parameters:
+        - in: body
+          name: body
+          description: "Service ticket information"
+          required: true
+          schema: 
+            $ref: "#/definitions/CreateServiceTicket"
+      responses:
+        201:
+          description: "Service ticket successfully created"
+          schema: 
+            $ref: "#/definitions/ServiceTicket"
+        400:
+          description: "Invalid service ticket data"
+          schema:
+            $ref: "#/definitions/ValidationError"
+
+    get:
+      tags:
+        - Service Tickets
+      summary: "Get all service tickets"
+      description: "Returns a paginated list of service tickets."
+      parameters:
+        - in: query
+          name: page
+          description: "Page number"
+          required: false
+          type: integer
+          default: 1
+        - in: query
+          name: "per_page"
+          description: "Number of service tickets per page"
+          required: false
+          type: integer
+          default: 10
+      responses:
+        200:
+          description: "Service tickets successfully retrieved"
+          schema:
+            $ref: "#/definitions/PaginatedServiceTickets"
+
+  /service-tickets/{ticket_id}:
+    get:
+      tags: 
+        - Service Tickets
+      summary: "Get a service ticket by ID"
+      description: "Returns a single service ticket."
+      parameters:
+        - in: path
+          name: "ticket_id"
+          description: "ID of the service ticket"
+          required: true
+          type: integer
+      responses:
+        200:
+          description: "Service ticket successfully retrieved"
+          schema:
+            $ref: "#/definitions/ServiceTicket"
+        404:
+          description: "Service ticket not found"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+    put:
+      tags:
+        - Service Tickets
+      summary: "Edit service ticket mechanic assignments"
+      description: "Adds or removes mechanics assigned to a service ticket."
+      parameters:
+        - in: path
+          name: "ticket_id"
+          description: "ID of the service ticket"
+          required: true
+          type: integer
+        - in: body
+          name: body
+          description: "Mechanic IDs to add or remove"
+          required: true
+          schema:
+            $ref: "#/definitions/EditServiceTicket"
+      responses:
+        200:
+          description: "Service ticket successfully updated"
+          schema:
+            $ref: "#/definitions/ServiceTicket"
+        400:
+          description: "Invalid request data"
+          schema:
+            $ref: "#/definitions/ValidationError"
+        404:
+          description: "Service ticket not found"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+    delete:
+      tags:
+        - Service Tickets
+      summary: "Delete a service ticket"
+      description: "Deletes a service ticket and its relationship records."
+      parameters:
+        - in: path
+          name: "ticket_id"
+          description: "ID of the service ticket"
+          required: true
+          type: integer
+      responses:
+        200:
+          description: "Service ticket successfully deleted"
+          schema: 
+            $ref: "#/definitions/MessageResponse"
+        404:
+          description: "Service ticket not found"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /service-tickets/{ticket_id}/assign-mechanic/{mechanic_id}:
+    put:
+      tags:
+        - Service Tickets
+      summary: "Assign a mechanic to a service ticket"
+      description: "Adds a mechanic to the service ticket if not already assigned."
+      parameters:
+        - in: path
+          name: "ticket_id"
+          description: "ID of the service ticket"
+          required: true
+        - in: path
+          name: "mechanic_id"
+          description: "ID of the mechanic"
+          required: true
+          type: integer
+      responses: 
+        200:
+          description: "Mechanic successfully assigned"
+          schema:
+            $ref: "#/definitions/ServiceTicket"
+        404:
+          description: "Service ticket or mechanic not found"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /service-tickets/{ticket_id}/remove-mechanic/{mechanic_id}:
+    put:
+      tags:
+        - Service Tickets
+      summary: "Remove a mechanic from a service ticket"
+      description: "Removes a mechanic from the service ticket if assigned."
+      parameters:
+        - in: path
+          name: "ticket_id"
+          description: "ID of the service ticket"
+          required: true
+          type: integer
+        - in: path
+          name: "mechanic_id"
+          description: "ID of the mechanic"
+          required: true
+          type: integer
+      responses:
+        200:
+          description: "Mechanic successfully removed"
+          schema: 
+            $ref: "#/definitions/ServiceTicket"
+        404:
+          description: "Service ticket or mechanic not found"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /service-tickets/{ticket_id}/add-part/{inventory_id}:
+    put:
+      tags:
+        - Service Tickets
+      summary: "Add an inventory part to a service ticket"
+      description: "Adds an inventory item to the service ticket if not already attached."
+      parameters:
+        - in: path
+          name: "ticket_id"
+          description: "ID of the service ticket"
+          required: true
+          type: integer
+        - in: path
+          name: "inventory_id"
+          description: "ID of the inventory item"
+          required: true
+          type: integer
+      responses:
+        200:
+          description: "Inventory item successfully added"
+          schema:
+            $ref: "#/definitions/ServiceTicket"
+        404:
+          description: "Service ticket or inventory item not found"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
 
 #EXAMPLES for Responses and Requests
 #CUSTOMER Definitions:
@@ -1097,3 +1299,100 @@ definitions:
     example:
       customer_id:
         - "Missing data for required field."
+
+
+#SERVICE TICKET descriptions:
+  CreateServiceTicket:
+    type: object
+    required: 
+      - service_date
+      - service_desc
+      - VIN
+    properties:
+      service_date:
+        type: string
+        format: date
+        example: "2026-07-15"
+      service_desc:
+        type: string
+        example: "Replace worn brake pads"
+      VIN: 
+        type: string
+        minLength: 17
+        maxLength: 17
+        example: 1HGCM82633A123456
+
+  EditServiceTicket:
+    type: object
+    properties:
+      add_mechanic_ids:
+        type: array
+        items:
+          type: integer
+        example: 
+          - 1
+          - 2
+      remove_mechanic_ids:
+        type: array
+        items: 
+          type: integer
+        example:
+          - 3
+
+  ServiceTicket:
+    type: object
+    properties:
+      id: 
+        type: integer
+        example: 1
+      service_date:
+        type: string
+        format: date
+        example: "2026-07-15"
+      service_desc:
+        type: string
+        example: "Replace worn brake pads"
+      VIN: 
+        type: string
+        example: "1HGCM82633A123456"
+      mechanics:
+        type: array
+        items: 
+          type: integer
+        example: 
+          - 1
+          - 2
+      parts:
+        type: array
+        items: 
+          type: integer
+        example: 
+          - 1
+          - 4
+
+  PaginatedServiceTickets:
+    type: object
+    properties: 
+      service_tickets:
+        type: array
+        itesm: 
+          $ref: "#/definitions/ServiceTicket"
+      page:
+        type: integer
+        example: 1
+      per_page:
+        type: integer
+        example: 10
+      total: 
+        type: integer
+        example: 25
+      pages:
+        type: integer
+        example: 3
+
+  ErrorResponse:
+    type: object
+    properties:
+      error:
+        type: string
+        example: "Service ticket not found."
