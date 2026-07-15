@@ -475,6 +475,137 @@ paths:
               error: "Item not found."
 
 
+#INVENTORY:
+  /inventory/:
+    post:
+      tags:
+        - Inventory
+      summary: "Create a new inventory item"
+      description: "Creates a new inventory item for the mecahnic shop."
+      parameters:
+        - in: body
+          name: body
+          description: "Information required to create an inventory item."
+          required: true
+          schema:
+            $ref: "#/definitions/CreateInventoryPayload"
+      responses: 
+        201:
+          description: "Inventory item created successfully."
+          schema:
+            $ref: "#/definitions/InventoryResponse"
+          examples:
+            application/json:
+              id: 1
+              name: "Alternator"
+              price: 189.99
+        400:
+          description: "Invalid inventory information."
+          examples:
+            application/json:
+              price:
+                - "Missing data for required field."
+
+    get: 
+      tags:
+        - Inventory
+      summary: "Get all inventory items"
+      description: "Returns a list of all inventory items."
+      responses:
+        200:
+          description: "Inventory retrieved successfully."
+          schema:
+            type: array
+            items: 
+              $ref: "#/definitions/InventoryResponse"
+          examples: 
+            application/json:
+              - id: 1
+                name: "Alternator"
+                price: 189.99
+              - id: 2
+                name: "Starter Motor"
+                price: 149.99
+
+  /inventory/{item_id}:
+    parameters:
+      - in: path
+        name: item_id
+        required: true
+        type: integer
+        description: "The ID of the inventory item."
+
+    get: 
+      tags: 
+        - Inventory
+      summary: "Get an inventory item by ID"
+      description: "Returns one inventory item using the supplied inventory ID."
+      responses:
+        200:
+          description: "Inventory item retrieved successfully."
+          schema:
+            $ref: "#/definitions/InventoryResponse"
+          examples:
+            application/json:
+              id: 1
+              name: "Alternator"
+              price: 189.99
+        404:
+          description: "Inventory item not found."
+          examples:
+            application/json:
+              error: "Inventory item not found"
+
+    put: 
+      tags: 
+        - Inventory
+      summary: "Update an inventory item"
+      description: "Updates one or more fields belonging to an existing inventory item."
+      parameters:
+        - in: body
+          name: body
+          description: "Inventory fields to update."
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateInventoryPayload"
+      responses:
+        200:
+          description: "Inventory item updated successfully."
+          schema:
+            $ref: "#/definitions/InventoryResponse"
+          examples:
+            application/json:
+              id: 1
+              name: "Alternator"
+              price: 199.99
+        400:
+          description: "Invalid inventory information."
+        404:
+          description: "Inventory item not found."
+          examples:
+            application/json:
+              error: "Inventory item not found"
+
+    delete: 
+      tags:
+        - Inventory
+      summary: "Delete an inventory item"
+      description: "Deletes the inventory item associated with the supplied inventory ID."
+      responses:
+        200:
+          description: "Inventory item deleted successfully."
+          schema: 
+            $ref: "#/definitions/DeleteInventoryResponse"
+          examples:
+            application/json:
+              message: "Inventory item 1 deleted successfully"
+        404:
+          description: "Inventory item not found."
+          examples:
+            application/json:
+              error: "Inventory item not found"
+
+
 
 #EXAMPLES for Responses and Requests
 #CUSTOMER Definitions:
@@ -685,3 +816,51 @@ definitions:
       message:
         type: string
         example: "Item 1 deleted successfully."
+
+
+#INVENTORY Descriptions:
+  CreateInventoryPayload:
+    type: object
+    required:
+      - name
+      - price
+    properties:
+      name:
+        type: string
+        example: "Alternator"
+      price: 
+        type: number
+        format: float
+        example: 189.99
+
+  UpdateInventoryPayload:
+    type: object
+    properties: 
+      name: 
+        type: string
+        example: "Premium Alternator"
+      price:
+        type: number
+        format: float
+        example: 199.99
+
+  InventoryResponse:
+    type: object
+    properties:
+      id: 
+        type: integer
+        example: 1
+      name: 
+        type: string
+        example: "Alternator"
+      price:
+        type: number
+        format: float
+        example: 189.99
+
+  DeleteInventoryResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "Inventory item 1 deleted successfully"
