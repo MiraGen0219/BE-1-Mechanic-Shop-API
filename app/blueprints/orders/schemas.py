@@ -3,23 +3,20 @@ from app.models import Order, OrderItem
 from marshmallow import fields
 from app.blueprints.items.schemas import ItemSchema
 
+class ReceiptItemSchema(ma.Schema):
+    item = fields.String(required=True)
+    quantity = fields.Integer(required=True)
+    price = fields.Float(required=True)
+    subtotal = fields.Float(required=True)
+    
 class ReceiptSchema(ma.Schema):
-    '''
-    total: 39.02
-    order: {
-        order_id: 1,
-        customer_id: 1,
-        order_date: 2024-10-08,
-        order_items: [
-            {
-                item: {item_name: "Brake Pads", price: 68.99},
-                quantity: 2
-            }
-            ]
-            }
-    '''
-    total = fields.Int(required=True)
-    order = fields.Nested("OrderSchema")
+    order_id = fields.Integer(required=True)
+    customer_id = fields.Integer(required=True)
+    order_date = fields.Date(required=True)
+    items = fields.List(fields.Nested(ReceiptItemSchema), required=True)
+    total = fields.Float(required=True)
+    
+receipt_schema = ReceiptSchema()
     
 
 class OrderSchema(ma.SQLAlchemyAutoSchema):
