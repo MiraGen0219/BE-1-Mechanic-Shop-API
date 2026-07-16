@@ -52,7 +52,7 @@ def update_mechanic(mechanic_id):
     mechanic = db.session.get(Mechanic, mechanic_id)
     
     if not mechanic: 
-        return jsonify({"error": "Mechanic not found"}), 404
+        return jsonify({"error": "Mechanic not found."}), 404
     
     try:
         mechanic_data = mechanic_schema.load(request.json, partial=True)
@@ -72,7 +72,7 @@ def delete_mechanic(mechanic_id):
     mechanic = db.session.get(Mechanic, mechanic_id)
     
     if not mechanic:
-        return jsonify({"error": "Mechanic not found"}), 404
+        return jsonify({"error": "Mechanic not found."}), 404
     
     db.session.delete(mechanic)
     db.session.commit()

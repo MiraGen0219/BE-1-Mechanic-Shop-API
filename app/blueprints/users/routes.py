@@ -14,46 +14,68 @@ def login():
         credentials = request.json
         email = credentials['email']
         password = credentials['password']
-    except KeyError:
-        return jsonify({'messages': 'Invalid payload, expecting username and password'}), 400
+    except (KeyError, TypeError):
+        return jsonify({'message': 'Invalid payload, expecting email and password'}), 400
     
     query = select(User).where(User.email == email)
     user = db.session.execute(query).scalar_one_or_none() 
     
     if user and user.password == password:
-        auth_token = encode_token(user.id, user.role.role_name)
+        auth_token = encode_token(user.id)
         
-        response = {
+        return jsonify ({
             "status": "success",
             "message": "Successfully Logged In",
             "auth_token": auth_token
-        }
-        return jsonify(response), 200
-    else:
-        return jsonify({'message': "Invalid email or password"}), 401
+        }), 200
+    
+    return jsonify({'message': "Invalid email or password"}), 401
 
 #CREATE / POST a User:
-@user_bp.route("/users", methods=['POST'])
-@limiter.limit("3 per hour") #a client can only attempt to make 3 users per hour
+@user_bp.route("/", methods=["POST"])
+@limiter.limit("3 per hour")
 def create_user():
-    try: 
-        # Deserialize and validate input data
+    try:
         user_data = user_schema.load(request.json)
     except ValidationError as e:
         return jsonify(e.messages), 400
-    
-    #use data to create an instance of User
-    new_user = User(name=user_data['name'], email=user_data['email'], password=user_data['password'])
-    
-    #save new_user to the database
+
+    existing_email = db.session.execute(
+        select(User).where(
+            User.email == user_data["email"]
+        )
+    ).scalar_one_or_none()
+
+    if existing_email:
+        return jsonify({
+            "message": "A user with that email already exists"
+        }), 409
+
+    existing_username = db.session.execute(
+        select(User).where(
+            User.username == user_data["username"]
+        )
+    ).scalar_one_or_none()
+
+    if existing_username:
+        return jsonify({
+            "message": "A user with that username already exists"
+        }), 409
+
+    new_user = User(
+        username=user_data["username"],
+        email=user_data["email"],
+        password=user_data["password"]
+    )
+
     db.session.add(new_user)
     db.session.commit()
-    
-    #use schema to return the serialized data of the created user
+    cache.clear()
+
     return user_schema.jsonify(new_user), 201
 
 #GET / RETRIEVE Users:
-@user_bp.route('/users', methods=['GET'])
+@user_bp.route('/', methods=['GET'])
 @cache.cached(timeout=60)
 def get_users():
     query = select(User)
@@ -61,12 +83,16 @@ def get_users():
     return users_schema.jsonify(result), 200 
 
 #DELETE a User:
-@user_bp.route('/users', methods=['DELETE'])
+@user_bp.route('/', methods=['DELETE'])
 @token_required
 def delete_user(user_id): 
-    query = select(User).where(User.id == user_id)
-    user = db.session.execute(query).scalars().first()
+    user = db.session.get(User, user_id)
+    
+    if not user:
+        return jsonify({"message": "User not found"}), 404
     
     db.session.delete(user)
     db.session.commit()
-    return jsonify({"message": f"successfully deleted user {user_id}"})
+    cache.clear()
+    
+    return jsonify({"message": f"Successfully deleted user {user_id}"}), 200

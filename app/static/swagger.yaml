@@ -920,6 +920,104 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
 
+#USERS:
+  /users/login:
+    post:
+      tags:
+        - Users
+      summary: "Log in a user"
+      description: "Validates user credentials and returns an authentication token."
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "User login credentials"
+          required: true
+          schema:
+            $ref: "#/definitions/UserLogin"
+      responses:
+        200:
+          description: "Login successful"
+          schema:
+            $ref: "#/definitions/UserLoginResponse"
+        400:
+          description: "Invalid login payload"
+          schema:
+            $ref: "#/definitions/MessageResponse"
+        401:
+          description: "Invalid email or password"
+          schema:
+            $ref: "#/definitions/MessageResponse"
+
+  /users/:
+    post:
+      tags:
+        - Users
+      summary: "Create a user"
+      description: "Creates a new user. Limited to three requests per hour per client."
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "New user information"
+          required: true
+          schema:
+            $ref: "#/definitions/CreateUser"
+      responses:
+        201:
+          description: "User successfully created"
+          schema:
+            $ref: "#/definitions/User"
+        400:
+          description: "Invalid user data"
+          schema:
+            $ref: "#/definitions/ValidationError"
+        409:
+          description: "Email or username already exists"
+          schema:
+            $ref: "#/definitions/MessageResponse"
+        429:
+          description: "User creation rate limit exceeded"
+          schema:
+            $ref: "#/definitions/RateLimitResponse"
+
+    get:
+      tags:
+        - Users
+      summary: "Get all users"
+      description: "Returns all users. Passwords are not included in the response."
+      responses:
+        200:
+          description: "Users successfully retrieved"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/User"
+
+    delete:
+      tags:
+        - Users
+      summary: "Delete the authenticated user"
+      description: "Deletes the user identified by the authentication token."
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: "User successfully deleted"
+          schema:
+            $ref: "#/definitions/MessageResponse"
+        401:
+          description: "Authentication token is missing or invalid"
+          schema:
+            $ref: "#/definitions/MessageResponse"
+        403:
+          description: "Authentication token is not authorized"
+          schema:
+            $ref: "#/definitions/MessageResponse"
+        404:
+          description: "User not found"
+          schema:
+            $ref: "#/definitions/MessageResponse"
+
+
 #EXAMPLES for Responses and Requests
 #CUSTOMER Definitions:
 definitions: 
@@ -1396,3 +1494,73 @@ definitions:
       error:
         type: string
         example: "Service ticket not found."
+
+
+#USERS descriptions: 
+  CreateUser:
+    type: "object"
+    required:
+      - username
+      - email
+      - password
+    properties:
+      username:
+        type: "string"
+        example: "testuser"
+      email:
+        type: "string"
+        format: "email"
+        example: "testuser@email.com"
+      password:
+        type: "string"
+        format: "password"
+        example: "testpassword"
+
+  UserLogin:
+    type: "object"
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: "string"
+        format: "email"
+        example: "testuser@email.com"
+      password:
+        type: "string"
+        format: "password"
+        example: "testpassword"
+
+  User:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        example: 1
+      username:
+        type: "string"
+        example: "testuser"
+      email:
+        type: "string"
+        format: "email"
+        example: "testuser@email.com"
+
+  UserLoginResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      message:
+        type: "string"
+        example: "Successfully Logged In"
+      auth_token:
+        type: "string"
+        example: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+
+  RateLimitResponse:
+    type: "object"
+    properties:
+      error:
+        type: "string"
+        example: "3 per 1 hour"

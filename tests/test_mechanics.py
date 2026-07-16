@@ -14,7 +14,9 @@ class TestMechanic(unittest.TestCase):
             
             mechanic = Mechanic(
                 name="Joe Bosh",
-                email="joe@email.com"
+                email="joe@email.com",
+                phone="555-555-5555",
+                salary=50000.00
             )
             
             db.session.add(mechanic)
@@ -30,7 +32,9 @@ class TestMechanic(unittest.TestCase):
     def test_create_mechanic(self):
         mechanic_payload = {
             "name": "Jane Smith",
-            "email": "jane@email.com"
+            "email": "jane@email.com",
+            "phone": "555-555-5555",
+            "salary": 55000.00
         }
         
         response = self.client.post("/mechanics/", json=mechanic_payload)
@@ -53,7 +57,9 @@ class TestMechanic(unittest.TestCase):
     def test_duplicate_mechanic_email(self):
         mechanic_payload = {
             "name": "Another Joe",
-            "email": "joe@email.com"
+            "email": "joe@email.com",
+            "phone": "555-555-5555",
+            "salary": 55000.00
         }
         
         response = self.client.post("/mechanics/", json=mechanic_payload)
@@ -97,7 +103,7 @@ class TestMechanic(unittest.TestCase):
         response = self.client.put("/mechanics/999", json={"name": "Joseph Bosh"})
         
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json["error"], "Mechanic not found")
+        self.assertEqual(response.json["error"], "Mechanic not found.")
         
     def test_invalid_mechanic_update(self):
         response = self.client.put(f"/mechanics/{self.mechanic_id}", json={"unknown_field": "invalid"})
