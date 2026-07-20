@@ -1,8 +1,21 @@
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 
 class DevelopmentConfig:
-    SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://root:FerretGarden2026!@localhost:3306/be1'
+    MYSQL_USER = os.getenv("MYSQL_USER")
+    MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD")
+    MYSQL_HOST = os.getenv("MYSQL_HOST")
+    MYSQL_PORT = os.getenv("MYSQL_PORT")
+    MYSQL_DATABASE = os.getenv("MYSQL_DATABASE")
+    
+    SQLALCHEMY_DATABASE_URI = (
+        f"mysql+mysqlconnector://{MYSQL_USER}:{MYSQL_PASSWORD}"
+        f"@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
+    )
+    
     DEBUG = True
     CACHE_TYPE = 'SimpleCache'
     CACHE_DEFAULT_TIMEOUT = 300
