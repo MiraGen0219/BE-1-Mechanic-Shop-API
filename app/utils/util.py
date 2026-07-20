@@ -3,8 +3,9 @@ from datetime import datetime, timedelta, timezone
 from jose import jwt
 import jose
 from functools import wraps
+import os
 
-SECRET_KEY = "a super secret, secret key"
+SECRET_KEY = os.environ.get('SECRET_KEY') or "super secret secrets"
 
 def token_required(f):
     @wraps(f)

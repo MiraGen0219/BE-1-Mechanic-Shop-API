@@ -1,3 +1,5 @@
+import os
+
 
 class DevelopmentConfig:
     SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://root:FerretGarden2026!@localhost:3306/be1'
@@ -9,6 +11,10 @@ class TestingConfig:
     SQLALCHEMY_DATABASE_URI = 'sqlite:///testing.db'
     DEBUG = True
     CACHE_TYPE = 'SimpleCache'
+    
+class ProductionConfig:
+    SQLALCHEMY_DATABSE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
+    CACHE_TYPE = "SimpleCache"
 
 class ProductionConfig:
     pass
